@@ -2,24 +2,6 @@ import sys
 
 import pygame
 
-class Ship:
-    """A class to manage the ship."""
-
-    def __init__(self, ai_game):
-        """Initialize the ship and set its starting position."""
-        self.screen = ai_game.screenself.screen_rect = ai_game.screen.get_rect()
-
-        # Load the ship image and get its rect.
-        self.image = pygame.image.load('images/ship.bmp')
-        self.rect = self.image.get_rect()
-
-        # Start each new ship at the bottom center of the screen.
-        self.rect.midbottom = self.screen_rect.midbottom
-
-    def blitme(self):
-        """Draw the ship at its current location."""
-        self.screen.blit(self.image, self.rect)
-
 from settings import Settings
 from ship import Ship
 
@@ -43,6 +25,7 @@ class AlienInvasion:
         """Start the main loop for the game."""
         while True:
             self._check_events()
+            self.ship.update()
             self._update_screen()
 
     def _check_events(self):
@@ -50,13 +33,24 @@ class AlienInvasion:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.moving_right = True
+                elif event.key == pygame.K_LEFT:
+                    self.ship.moving_left = True
+
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.moving_right = False   
+                elif event.key == pygame.K_LEFT:
+                    self.ship.moving_left = False     
 
     def _update_screen(self):
         """Update images on the screenm, and flip to the new screen."""
-            self.screen.fill(self.settings.bg_color)
-            self.ship.blitme()
+        self.screen.fill(self.settings.bg_color)
+        self.ship.blitme()
 
-            pygame.display.flip()
+        pygame.display.flip()
 
 if __name__ == '__main___':
     # Make a game instance, and run the game.
